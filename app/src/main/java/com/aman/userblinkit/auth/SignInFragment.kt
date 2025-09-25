@@ -1,6 +1,5 @@
 package com.aman.userblinkit.auth
 
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.aman.userblinkit.R
@@ -22,27 +23,26 @@ class SignInFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentSignInBinding.inflate(layoutInflater)
+        binding = FragmentSignInBinding.inflate(inflater, container, false)
 
         setStatusBarColor()
-
         getUserNumber()
 
         onContinueButtonClick()
+
         return binding.root
     }
 
     private fun onContinueButtonClick() {
         binding.btnContinue.setOnClickListener {
-            val number = binding.etUserNumber.text.toString()
+            val number = binding.etUserNumber.text.toString().trim()
 
-            if(number.isEmpty() || number.length != 10){
+            if (number.isEmpty() || number.length != 10) {
                 Utils.showToast(requireContext(), "Please enter a valid number")
-            }
-            else{
+            } else {
                 val bundle = Bundle()
-                bundle.putString("number" , number)
-                findNavController().navigate(R.id.action_signInFragment_to_OTPFragment , bundle)
+                bundle.putString("number", number)
+                findNavController().navigate(R.id.action_signInFragment_to_OTPFragment, bundle)
             }
         }
     }
@@ -56,8 +56,7 @@ class SignInFragment : Fragment() {
                     count: Int,
                     after: Int
                 ) {
-
-                    TODO("Not yet implemented")
+                    // Empty implementation
                 }
 
                 override fun onTextChanged(
@@ -86,7 +85,7 @@ class SignInFragment : Fragment() {
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-                    TODO("Not yet implemented")
+                    // Empty implementation
                 }
 
             }
@@ -95,12 +94,18 @@ class SignInFragment : Fragment() {
 
 
     private fun setStatusBarColor() {
-        activity?.window?.apply {
-            val statusBarColors = ContextCompat.getColor(requireContext(), R.color.yellow)
-            statusBarColor = statusBarColors
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            }
+        activity?.window?.let { window ->
+            // Set status bar color (works on API 21+)
+            window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.yellow)
+
+            // Use WindowInsetsControllerCompat for icon color control
+            val wic = WindowInsetsControllerCompat(window, window.decorView)
+            // true = dark icons (for light background), false = light icons
+            wic.isAppearanceLightStatusBars = true
+
+            // Make sure system bars are drawn correctly, no need to add/clear flags manually now
+            WindowCompat.setDecorFitsSystemWindows(window, true)
         }
     }
+
 }

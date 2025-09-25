@@ -13,8 +13,12 @@
         android:theme="@style/Theme.UserBlinkit"
         tools:targetApi="31">
         <activity
-            android:name=".activity.MainActivity"
-            android:exported="true">
+            android:name=".activity.UsersMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AuthMainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

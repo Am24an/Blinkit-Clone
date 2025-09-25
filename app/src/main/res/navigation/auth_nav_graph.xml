@@ -13,6 +13,7 @@
         <action
             android:id="@+id/action_splashFragment_to_signInFragment"
             app:destination="@id/signInFragment"
+            app:enterAnim="@anim/from_right"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -23,6 +24,7 @@
         tools:layout="@layout/fragment_sign_in" >
         <action
             android:id="@+id/action_signInFragment_to_OTPFragment"
+            app:enterAnim="@anim/from_right"
             app:destination="@id/OTPFragment" />
     </fragment>
     <fragment
@@ -33,6 +35,7 @@
         <action
             android:id="@+id/action_OTPFragment_to_signInFragment"
             app:destination="@id/signInFragment"
+            app:enterAnim="@anim/from_left"
             app:popUpTo="@id/signInFragment"
             app:popUpToInclusive="true" />
     </fragment>

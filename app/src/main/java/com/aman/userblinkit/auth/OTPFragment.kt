@@ -1,5 +1,6 @@
 package com.aman.userblinkit.auth
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -7,12 +8,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.R
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.aman.userblinkit.R
+import com.aman.userblinkit.Utils
+import com.aman.userblinkit.activity.UsersMainActivity
 import com.aman.userblinkit.databinding.FragmentOTPBinding
+import com.aman.userblinkit.models.Users
+import com.aman.userblinkit.viewmodels.AuthViewModel
+import kotlinx.coroutines.launch
 
 class OTPFragment : Fragment() {
 
+    private val viewModel: AuthViewModel by viewModels()
     private lateinit var binding: FragmentOTPBinding
     private lateinit var userNumber: String
 
@@ -20,19 +29,78 @@ class OTPFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentOTPBinding.inflate(layoutInflater)
+        binding = FragmentOTPBinding.inflate(inflater, container, false)
+
 
         getUserNumber()
         customizingEnteringOTP()
+        onLoginButtonClicked()
         onBackButtonClicked()
 
+        sendOTP()
         return binding.root
     }
 
+    private fun onLoginButtonClicked() {
+        binding.btnLogin.setOnClickListener {
+            Utils.showDialog(requireContext(), "Verifying OTP...")
+            val editTexts = arrayOf(
+                binding.etOtp1,
+                binding.etOtp2,
+                binding.etOtp3,
+                binding.etOtp4,
+                binding.etOtp5,
+                binding.etOtp6
+            )
+            val otp = editTexts.joinToString("") { it.text.toString() }
+
+            if (otp.length < editTexts.size) {
+                Utils.showToast(requireContext(), "Please enter a valid OTP")
+            } else {
+                editTexts.forEach { it.text?.clear(); it.clearFocus() }
+                verifyOTP(otp)
+            }
+        }
+    }
+
+    private fun verifyOTP(otp: String) {
+        val user = Users(uid = Utils.getCurrentUserId(), userPhoneNumber = userNumber, userAddress = null)
+
+        viewModel.signInWithPhoneAuthCredential(otp, userNumber, user)
+
+        lifecycleScope.launch {
+            viewModel.signedInSuccessfully.collect {
+                if (it) {
+                    Utils.showToast(requireContext(), "Logged In Successfully")
+                    Utils.hideDialog()
+                    startActivity(Intent(requireContext(), UsersMainActivity::class.java))
+                    requireActivity().finish()
+                }
+            }
+        }
+    }
+
+    private fun sendOTP() {
+        Utils.showDialog(requireContext(), "Sending OTP ...")
+        viewModel.apply {
+            sendOTP(userNumber, requireActivity())
+
+            lifecycleScope.launch {
+                optSent.collect {
+                    if (it) {
+                        Utils.hideDialog()
+                        Utils.showToast(requireContext(), "OTP Sent")
+                    }
+                }
+            }
+
+        }
+    }
+
     private fun onBackButtonClicked() {
-       binding.tbOtpFragment.setNavigationOnClickListener {
-           findNavController().navigate(R.id.action_OTPFragment_to_signInFragment)
-       }
+        binding.tbOtpFragment.setNavigationOnClickListener {
+            findNavController().navigate(R.id.action_OTPFragment_to_signInFragment)
+        }
     }
 
 
@@ -54,7 +122,7 @@ class OTPFragment : Fragment() {
                     count: Int,
                     after: Int
                 ) {
-                    TODO("Not yet implemented")
+                    // Empty implementation
                 }
 
                 override fun onTextChanged(
@@ -63,7 +131,7 @@ class OTPFragment : Fragment() {
                     before: Int,
                     count: Int
                 ) {
-                    TODO("Not yet implemented")
+                    // Empty implementation
                 }
 
                 override fun afterTextChanged(s: Editable?) {
