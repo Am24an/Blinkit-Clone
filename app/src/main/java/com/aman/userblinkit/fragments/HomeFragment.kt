@@ -1,4 +1,4 @@
-package com.aman.userblinkit
+package com.aman.userblinkit.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.aman.userblinkit.Constants
+import com.aman.userblinkit.R
 import com.aman.userblinkit.adapters.AdapterCategory
 import com.aman.userblinkit.databinding.FragmentHomeBinding
 import com.aman.userblinkit.models.Category
@@ -26,15 +29,27 @@ class HomeFragment : Fragment() {
 
         setStatusBarColor()
         setAllCategories()
+        navigatingToSearchFragment()
 
         return binding.root
+    }
+
+    private fun navigatingToSearchFragment() {
+        binding.searchCv.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+        }
     }
 
     private fun setAllCategories() {
         val categoryList = ArrayList<Category>()
 
-        for (i in 0 until Constants.allProductsCategoryIcon.size){
-            categoryList.add(Category(Constants.allProductsCategory[i], Constants.allProductsCategoryIcon[i]))
+        for (i in 0 until Constants.allProductsCategoryIcon.size) {
+            categoryList.add(
+                Category(
+                    Constants.allProductsCategory[i],
+                    Constants.allProductsCategoryIcon[i]
+                )
+            )
         }
 
         binding.rvCategories.adapter = AdapterCategory(categoryList)

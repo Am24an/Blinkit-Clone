@@ -36,7 +36,6 @@ class OTPFragment : Fragment() {
         customizingEnteringOTP()
         onLoginButtonClicked()
         onBackButtonClicked()
-
         sendOTP()
         return binding.root
     }

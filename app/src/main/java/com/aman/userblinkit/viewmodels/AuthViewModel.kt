@@ -26,7 +26,7 @@ class AuthViewModel : ViewModel() {
     val isACurrentUser = _isACurrentUser
 
     init {
-        Utils.getAuthInstance().currentUser?. let {
+        Utils.getAuthInstance().currentUser?.let {
             _isACurrentUser.value = true
         }
     }
@@ -67,11 +67,10 @@ class AuthViewModel : ViewModel() {
         Utils.getAuthInstance().signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    FirebaseDatabase.getInstance().getReference("AllUsers").child("Users").child(user.uid!!).setValue(user)
+                    FirebaseDatabase.getInstance().getReference("AllUsers").child("Users")
+                        .child(user.uid!!).setValue(user)
                     _isSignedInSuccessfully.value = true
 
-
-                } else {
 
                 }
                 // Update UI

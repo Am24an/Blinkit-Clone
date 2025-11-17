@@ -1,16 +1,28 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+# OS
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+Thumbs.db
+
+# IDE
 .idea/
+*.iml
+
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Native
+.cxx/
+externalNativeBuild/
+
+# Local Config / Secrets
+local.properties
+*.keystore
+*.jks
+
+# Firebase
+google-services.json
+app/google-services.json
+
+# Android Output
+captures/

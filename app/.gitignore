@@ -1,1 +1,18 @@
-/build
+# Firebase security
+google-services.json
+app/google-services.json
+
+# Android build files
+build/
+.gradle/
+
+# IDE
+.idea/
+*.iml
+
+# Local config
+local.properties
+
+# Signing keys (IMPORTANT for security)
+*.jks
+*.keystore
