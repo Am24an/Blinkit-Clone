@@ -10,7 +10,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-class UserViewModel : ViewModel(){
+class UserViewModel : ViewModel() {
 
     fun fetchAllTheProducts(): Flow<List<Product>> = callbackFlow {
         val db = FirebaseDatabase.getInstance().getReference("Admins").child("AllProducts")
@@ -19,7 +19,7 @@ class UserViewModel : ViewModel(){
                 val products = ArrayList<Product>()
                 for (product in snapshot.children) {
                     val prod = product.getValue(Product::class.java)
-                        products.add(prod!!)
+                    products.add(prod!!)
                 }
                 trySend(products)
             }

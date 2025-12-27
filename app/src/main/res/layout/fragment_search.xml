@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchFragment">
+    tools:context=".fragments.SearchFragment">
 
     <TextView
         android:id="@+id/tvText"
@@ -31,18 +31,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/searchEt"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@android:color/transparent"
-            android:drawablePadding="@dimen/_10sdp"
-            android:hint="Search"
-            android:padding="@dimen/_10sdp"
-            android:textColorHint="@color/black"
-            android:textSize="@dimen/_15ssp"
-            app:drawableStartCompat="@drawable/ic_arrow_back" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/BackBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="8dp"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="@color/black" />
+
+            <EditText
+                android:id="@+id/searchEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:hint="Search"
+                android:maxLines="1"
+                android:padding="@dimen/_5sdp"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/_15ssp" />
+
+        </LinearLayout>
+
+
     </com.google.android.material.card.MaterialCardView>
 
     <com.facebook.shimmer.ShimmerFrameLayout

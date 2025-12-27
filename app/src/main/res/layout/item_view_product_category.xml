@@ -9,11 +9,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:orientation="vertical">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/ivCategoryImage"
@@ -21,19 +21,19 @@
             android:layout_height="@dimen/_78sdp"
             android:background="@drawable/bg_category"
             android:scaleType="centerInside"
-            android:src="@drawable/vegetable"/>
+            android:src="@drawable/vegetable" />
 
-            <TextView
-                android:id="@+id/tvCategoryTitle"
-                android:layout_width="@dimen/_78sdp"
-                android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:layout_marginTop="6.50dp"
-                android:text="Vegetables and Fruits"
-                android:textSize="14.30sp"
-                android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/tvCategoryTitle"
+            android:layout_width="@dimen/_78sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6.50dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="Vegetables and Fruits"
+            android:textColor="@color/black"
+            android:textSize="14.30sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

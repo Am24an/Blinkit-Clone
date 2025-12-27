@@ -2,16 +2,18 @@ package com.aman.userblinkit.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.aman.userblinkit.FilteringProducts
 import com.aman.userblinkit.databinding.ItemViewProductBinding
-import com.denzcoskun.imageslider.models.SlideModel
 import com.aman.userblinkit.models.Product
-import kotlin.collections.isNullOrEmpty
+import com.denzcoskun.imageslider.models.SlideModel
 
 
-class AdapterProduct() : RecyclerView.Adapter<AdapterProduct.ProductViewHolder>() {
+class AdapterProduct() : RecyclerView.Adapter<AdapterProduct.ProductViewHolder>(), Filterable {
 
     class ProductViewHolder(val binding: ItemViewProductBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -72,11 +74,12 @@ class AdapterProduct() : RecyclerView.Adapter<AdapterProduct.ProductViewHolder>(
         return differ.currentList.size
     }
 
-//    val filter : FilteringProducts? = null
-//    var originalList = kotlin.collections.ArrayList<Product>()
-//
-//    override fun getFilter(): Filter? {
-//        if(filter == null) return FilteringProducts(this, originalList)
-//        return filter
-//    }
+
+    private val filter: FilteringProducts? = null
+    var originalList = ArrayList<Product>()
+
+    override fun getFilter(): Filter? {
+        if (filter == null) return FilteringProducts(this, originalList)
+        return filter
+    }
 }

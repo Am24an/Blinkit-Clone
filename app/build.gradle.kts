@@ -58,7 +58,14 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     // Firebase
-    implementation(libs.firebase.database)
+    implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.android.gms:play-services-auth-api-phone:18.2.0")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-database-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx:24.1.2")
 
     // Google Play Services
     implementation(libs.play.services.analytics.impl)
