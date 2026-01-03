@@ -7,7 +7,8 @@ import com.aman.userblinkit.databinding.ItemViewProductCategoryBinding
 import com.aman.userblinkit.models.Category
 
 class AdapterCategory(
-    val categoryList: ArrayList<Category>
+    val categoryList: ArrayList<Category>,
+    val onCategoryIconClicked: (Category) -> Unit
 ) : RecyclerView.Adapter<AdapterCategory.CategoryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
@@ -28,6 +29,9 @@ class AdapterCategory(
         holder.binding.apply {
             ivCategoryImage.setImageResource(category.image)
             tvCategoryTitle.text = category.title
+        }
+        holder.itemView.setOnClickListener {
+            onCategoryIconClicked(category)
         }
     }
 

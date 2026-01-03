@@ -52,8 +52,16 @@ class HomeFragment : Fragment() {
             )
         }
 
-        binding.rvCategories.adapter = AdapterCategory(categoryList)
+        binding.rvCategories.adapter = AdapterCategory(categoryList, ::onCategoryIconClicked)
     }
+
+    fun onCategoryIconClicked(category: Category){
+        val bundle = Bundle()
+        bundle.putString("category", category.title)
+        findNavController().navigate(R.id.action_homeFragment_to_categoryFragment, bundle)
+
+    }
+
 
 
     private fun setStatusBarColor() {

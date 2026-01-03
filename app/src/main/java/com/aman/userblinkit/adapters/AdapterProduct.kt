@@ -13,7 +13,12 @@ import com.aman.userblinkit.models.Product
 import com.denzcoskun.imageslider.models.SlideModel
 
 
-class AdapterProduct() : RecyclerView.Adapter<AdapterProduct.ProductViewHolder>(), Filterable {
+class AdapterProduct(
+    val onAddButtonClicked: (product: Product, productBinding: ItemViewProductBinding) -> Unit,
+    val onIncrementButtonClicked: (product: Product, productBinding: ItemViewProductBinding) -> Unit,
+    val onDecrementButtonClicked: (product: Product, productBinding: ItemViewProductBinding) -> Unit
+) :
+    RecyclerView.Adapter<AdapterProduct.ProductViewHolder>(), Filterable {
 
     class ProductViewHolder(val binding: ItemViewProductBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -66,6 +71,18 @@ class AdapterProduct() : RecyclerView.Adapter<AdapterProduct.ProductViewHolder>(
 
             tvProductPrice.text = "₹" + product.productPrice
 
+            tvAdd.setOnClickListener {
+                onAddButtonClicked(product, this)
+            }
+
+            tvIncrementCount.setOnClickListener {
+                onIncrementButtonClicked(product, this)
+
+            }
+
+            tvDecrementCount.setOnClickListener {
+                onDecrementButtonClicked(product, this)
+            }
         }
 
     }
