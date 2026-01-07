@@ -18,6 +18,7 @@ import com.aman.userblinkit.adapters.AdapterProduct
 import com.aman.userblinkit.databinding.FragmentCategoryBinding
 import com.aman.userblinkit.databinding.ItemViewProductBinding
 import com.aman.userblinkit.models.Product
+import com.aman.userblinkit.roomdb.CartProducts
 import com.aman.userblinkit.viewmodels.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -81,7 +82,11 @@ class CategoryFragment : Fragment() {
                     binding.tvText.visibility = View.GONE
                 }
 
-                adapterProduct = AdapterProduct(::onAddButtonClicked, ::onIncrementButtonClicked, ::onDecrementButtonClicked)
+                adapterProduct = AdapterProduct(
+                    ::onAddButtonClicked,
+                    ::onIncrementButtonClicked,
+                    ::onDecrementButtonClicked
+                )
                 binding.rvProducts.adapter = adapterProduct
                 adapterProduct.differ.submitList(it)
                 binding.shimmerViewContainer.visibility = View.GONE
@@ -113,25 +118,49 @@ class CategoryFragment : Fragment() {
         productBinding.tvProductCount.text = itemCount.toString()
 
         cartListener?.showCartLayout(1)
+
+
+        //Step 2 To save the item count in the shared preferences
+        product.itemCount = itemCount
+        lifecycleScope.launch {
+            cartListener?.savingCartItemCount(1)
+            saveProductInRoomDb(product)
+        }
+
     }
 
-    fun onIncrementButtonClicked(product: Product, productBinding: ItemViewProductBinding) {
+
+    private fun onIncrementButtonClicked(product: Product, productBinding: ItemViewProductBinding) {
 
         var itemCountInc = productBinding.tvProductCount.text.toString().toInt()
         itemCountInc++
         productBinding.tvProductCount.text = itemCountInc.toString()
 
         cartListener?.showCartLayout(1)
+
+        //step 2
+        product.itemCount = itemCountInc
+        lifecycleScope.launch {
+            cartListener?.savingCartItemCount(1)
+            saveProductInRoomDb(product)
+        }
     }
 
-    fun onDecrementButtonClicked(product: Product, productBinding: ItemViewProductBinding) {
+    private fun onDecrementButtonClicked(product: Product, productBinding: ItemViewProductBinding) {
         var itemCountDec = productBinding.tvProductCount.text.toString().toInt()
         itemCountDec--
 
-        if(itemCountDec > 0){
-            productBinding.tvProductCount.text = itemCountDec.toString()
+        product.itemCount = itemCountDec
+        lifecycleScope.launch {
+            cartListener?.savingCartItemCount(-1)
+            saveProductInRoomDb(product)
         }
-        else{
+
+        if (itemCountDec > 0) {
+            productBinding.tvProductCount.text = itemCountDec.toString()
+        } else {
+
+            lifecycleScope.launch { viewModel.deleteCartProduct(product.productRandomId!!) }
             productBinding.tvAdd.visibility = View.VISIBLE
             productBinding.llProductCount.visibility = View.GONE
             productBinding.tvProductCount.text = "0"
@@ -139,8 +168,25 @@ class CategoryFragment : Fragment() {
 
 
         cartListener?.showCartLayout(-1)
+
     }
 
+    private fun saveProductInRoomDb(product: Product) {
+
+        val cartProduct = CartProducts(
+            productId = product.productRandomId!!,
+            productName = product.productName,
+            productQuantity = product.productQuantity.toString() + product.productUnit.toString(),
+            productPrice = "₹" + "${product.productPrice}",
+            productCount = product.itemCount,
+            productImage = product.productImageUris?.get(0)!!,
+            productStock = product.productStock,
+            productCategory = product.productCategory,
+            adminUid = product.adminUid
+
+        )
+        lifecycleScope.launch { viewModel.insertCartProduct(cartProduct) }
+    }
 
     private fun setStatusBarColor() {
         activity?.window?.let { window ->

@@ -1,5 +1,6 @@
 package com.aman.userblinkit.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,9 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.aman.userblinkit.CartListener
 import com.aman.userblinkit.R
 import com.aman.userblinkit.adapters.AdapterProduct
 import com.aman.userblinkit.databinding.FragmentSearchBinding
+import com.aman.userblinkit.databinding.ItemViewProductBinding
 import com.aman.userblinkit.models.Product
 import com.aman.userblinkit.viewmodels.UserViewModel
 import kotlinx.coroutines.launch
@@ -21,7 +24,7 @@ class SearchFragment : Fragment() {
     private val viewModel: UserViewModel by viewModels()
     private lateinit var binding: FragmentSearchBinding
     private lateinit var adapterProduct: AdapterProduct
-
+    private var cartListener: CartListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,9 +80,7 @@ class SearchFragment : Fragment() {
                 }
 
                 adapterProduct = AdapterProduct(
-                    ::onAddButtonClicked,
-                    ::onIncrementButtonClicked,
-                    ::onDecrementButtonClicked
+                    ::onAddButtonClicked, ::onIncrementButtonClicked, ::onDecrementButtonClicked
                 )
                 binding.rvProducts.adapter = adapterProduct
                 adapterProduct.differ.submitList(it)
@@ -92,5 +93,58 @@ class SearchFragment : Fragment() {
 
     }
 
+    private fun onAddButtonClicked(product: Product, productBinding: ItemViewProductBinding) {
+        productBinding.tvAdd.visibility = View.GONE
+        productBinding.llProductCount.visibility = View.VISIBLE
+
+        // Step 1 to show cart view and product count in the UI
+
+        var itemCount = productBinding.tvProductCount.text.toString().toInt()
+        itemCount++
+        productBinding.tvProductCount.text = itemCount.toString()
+
+        cartListener?.showCartLayout(1)
+
+        cartListener?.savingCartItemCount(1)
+    }
+
+    fun onIncrementButtonClicked(product: Product, productBinding: ItemViewProductBinding) {
+
+        var itemCountInc = productBinding.tvProductCount.text.toString().toInt()
+        itemCountInc++
+        productBinding.tvProductCount.text = itemCountInc.toString()
+
+        cartListener?.showCartLayout(1)
+
+        cartListener?.savingCartItemCount(1)
+    }
+
+    fun onDecrementButtonClicked(product: Product, productBinding: ItemViewProductBinding) {
+        var itemCountDec = productBinding.tvProductCount.text.toString().toInt()
+        itemCountDec--
+
+        if (itemCountDec > 0) {
+            productBinding.tvProductCount.text = itemCountDec.toString()
+        } else {
+            productBinding.tvAdd.visibility = View.VISIBLE
+            productBinding.llProductCount.visibility = View.GONE
+            productBinding.tvProductCount.text = "0"
+        }
+
+
+        cartListener?.showCartLayout(-1)
+
+        cartListener?.savingCartItemCount(-1)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        if (context is CartListener) {
+            cartListener = context
+        } else {
+            throw ClassCastException("Please implement cart listener.")
+        }
+    }
 
 }
