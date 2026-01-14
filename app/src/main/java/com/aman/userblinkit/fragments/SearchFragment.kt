@@ -13,10 +13,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.aman.userblinkit.CartListener
 import com.aman.userblinkit.R
+import com.aman.userblinkit.Utils
 import com.aman.userblinkit.adapters.AdapterProduct
 import com.aman.userblinkit.databinding.FragmentSearchBinding
 import com.aman.userblinkit.databinding.ItemViewProductBinding
 import com.aman.userblinkit.models.Product
+import com.aman.userblinkit.roomdb.CartProducts
 import com.aman.userblinkit.viewmodels.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -105,27 +107,57 @@ class SearchFragment : Fragment() {
 
         cartListener?.showCartLayout(1)
 
-        cartListener?.savingCartItemCount(1)
+
+        //Step 2 To save the item count in the shared preferences
+        product.itemCount = itemCount
+        lifecycleScope.launch {
+            cartListener?.savingCartItemCount(1)
+            saveProductInRoomDb(product)
+            viewModel.updateItemCount(product, itemCount)
+        }
+
     }
 
-    fun onIncrementButtonClicked(product: Product, productBinding: ItemViewProductBinding) {
+    private fun onIncrementButtonClicked(product: Product, productBinding: ItemViewProductBinding) {
 
         var itemCountInc = productBinding.tvProductCount.text.toString().toInt()
         itemCountInc++
-        productBinding.tvProductCount.text = itemCountInc.toString()
 
-        cartListener?.showCartLayout(1)
+        if (product.productStock!! + 1 > itemCountInc) {
+            productBinding.tvProductCount.text = itemCountInc.toString()
 
-        cartListener?.savingCartItemCount(1)
+            cartListener?.showCartLayout(1)
+
+            //step 2
+            product.itemCount = itemCountInc
+            lifecycleScope.launch {
+                cartListener?.savingCartItemCount(1)
+                saveProductInRoomDb(product)
+                viewModel.updateItemCount(product, itemCountInc)
+
+            }
+        } else {
+            Utils.showToast(requireContext(), "Can't add more item of this product")
+        }
+
     }
 
-    fun onDecrementButtonClicked(product: Product, productBinding: ItemViewProductBinding) {
+    private fun onDecrementButtonClicked(product: Product, productBinding: ItemViewProductBinding) {
         var itemCountDec = productBinding.tvProductCount.text.toString().toInt()
         itemCountDec--
+
+        product.itemCount = itemCountDec
+        lifecycleScope.launch {
+            cartListener?.savingCartItemCount(-1)
+            saveProductInRoomDb(product)
+            viewModel.updateItemCount(product, itemCountDec)
+        }
 
         if (itemCountDec > 0) {
             productBinding.tvProductCount.text = itemCountDec.toString()
         } else {
+
+            lifecycleScope.launch { viewModel.deleteCartProduct(product.productRandomId!!) }
             productBinding.tvAdd.visibility = View.VISIBLE
             productBinding.llProductCount.visibility = View.GONE
             productBinding.tvProductCount.text = "0"
@@ -134,7 +166,23 @@ class SearchFragment : Fragment() {
 
         cartListener?.showCartLayout(-1)
 
-        cartListener?.savingCartItemCount(-1)
+    }
+
+    private fun saveProductInRoomDb(product: Product) {
+
+        val cartProduct = CartProducts(
+            productId = product.productRandomId!!,
+            productName = product.productName,
+            productQuantity = product.productQuantity.toString() + product.productUnit.toString(),
+            productPrice = "₹" + "${product.productPrice}",
+            productCount = product.itemCount,
+            productImage = product.productImageUris?.get(0)!!,
+            productStock = product.productStock,
+            productCategory = product.productCategory,
+            adminUid = product.adminUid
+
+        )
+        lifecycleScope.launch { viewModel.insertCartProduct(cartProduct) }
     }
 
     override fun onAttach(context: Context) {

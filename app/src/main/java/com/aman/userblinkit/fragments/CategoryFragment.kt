@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.aman.userblinkit.CartListener
 import com.aman.userblinkit.R
+import com.aman.userblinkit.Utils
 import com.aman.userblinkit.adapters.AdapterProduct
 import com.aman.userblinkit.databinding.FragmentCategoryBinding
 import com.aman.userblinkit.databinding.ItemViewProductBinding
@@ -125,6 +126,7 @@ class CategoryFragment : Fragment() {
         lifecycleScope.launch {
             cartListener?.savingCartItemCount(1)
             saveProductInRoomDb(product)
+            viewModel.updateItemCount(product, itemCount)
         }
 
     }
@@ -134,16 +136,25 @@ class CategoryFragment : Fragment() {
 
         var itemCountInc = productBinding.tvProductCount.text.toString().toInt()
         itemCountInc++
-        productBinding.tvProductCount.text = itemCountInc.toString()
 
-        cartListener?.showCartLayout(1)
+        if (product.productStock!! + 1 > itemCountInc) {
+            productBinding.tvProductCount.text = itemCountInc.toString()
 
-        //step 2
-        product.itemCount = itemCountInc
-        lifecycleScope.launch {
-            cartListener?.savingCartItemCount(1)
-            saveProductInRoomDb(product)
+            cartListener?.showCartLayout(1)
+
+            //step 2
+            product.itemCount = itemCountInc
+            lifecycleScope.launch {
+                cartListener?.savingCartItemCount(1)
+                saveProductInRoomDb(product)
+                viewModel.updateItemCount(product, itemCountInc)
+
+            }
         }
+        else{
+            Utils.showToast(requireContext(),"Can't add more item of this product")
+        }
+
     }
 
     private fun onDecrementButtonClicked(product: Product, productBinding: ItemViewProductBinding) {
@@ -154,6 +165,7 @@ class CategoryFragment : Fragment() {
         lifecycleScope.launch {
             cartListener?.savingCartItemCount(-1)
             saveProductInRoomDb(product)
+            viewModel.updateItemCount(product, itemCountDec)
         }
 
         if (itemCountDec > 0) {

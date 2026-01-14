@@ -1,6 +1,7 @@
 package com.aman.userblinkit.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
@@ -70,6 +71,14 @@ class AdapterProduct(
             tvProductQuantity.text = product.productQuantity.toString() + product.productUnit
 
             tvProductPrice.text = "₹" + product.productPrice
+
+
+            if (product.itemCount!! > 0) {
+                tvProductCount.text = product.itemCount.toString()
+                tvAdd.visibility = View.GONE
+                llProductCount.visibility = View.VISIBLE
+
+            }
 
             tvAdd.setOnClickListener {
                 onAddButtonClicked(product, this)

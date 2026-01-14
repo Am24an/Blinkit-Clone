@@ -8,16 +8,19 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.aman.userblinkit.Constants
 import com.aman.userblinkit.R
 import com.aman.userblinkit.adapters.AdapterCategory
 import com.aman.userblinkit.databinding.FragmentHomeBinding
 import com.aman.userblinkit.models.Category
+import com.aman.userblinkit.viewmodels.UserViewModel
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
+    private val viewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,8 +33,14 @@ class HomeFragment : Fragment() {
         setStatusBarColor()
         setAllCategories()
         navigatingToSearchFragment()
-
+        get()
         return binding.root
+    }
+
+    private fun get(){
+        viewModel.getAll().observe(viewLifecycleOwner){
+
+        }
     }
 
     private fun navigatingToSearchFragment() {

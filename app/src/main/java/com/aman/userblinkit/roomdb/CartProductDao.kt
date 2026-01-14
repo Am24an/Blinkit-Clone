@@ -1,5 +1,6 @@
 package com.aman.userblinkit.roomdb
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -12,6 +13,9 @@ interface CartProductDao {
 
     @Update
     fun updateCartProducts(products: CartProducts)
+
+    @Query("SELECT * FROM CartProducts"  )
+    fun getAllCartProducts(): LiveData<List<CartProducts>>
 
     @Query("DELETE FROM CartProducts WHERE productId = :productId")
     fun deleteCartProduct(productId: String)

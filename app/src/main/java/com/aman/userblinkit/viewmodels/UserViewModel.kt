@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.aman.userblinkit.models.Product
 import com.aman.userblinkit.roomdb.CartProductDao
@@ -23,15 +24,25 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     val sharedPreferences: SharedPreferences =
         application.getSharedPreferences("My_Pref", MODE_PRIVATE)
 
-    val cartProductDao: CartProductDao = CartProductsDatabase.getDatabaseInstance(application).cartProductsDao()
+    val cartProductDao: CartProductDao =
+        CartProductsDatabase.getDatabaseInstance(application).cartProductsDao()
 
     // Room Db
-    suspend fun insertCartProduct(products: CartProducts){ cartProductDao.insertCartProduct(products) }
+    suspend fun insertCartProduct(products: CartProducts) {
+        cartProductDao.insertCartProduct(products)
+    }
 
-    suspend fun updateCartProducts(products: CartProducts){ cartProductDao.updateCartProducts(products) }
+    fun getAll(): LiveData<List<CartProducts>> {
+        return cartProductDao.getAllCartProducts()
+    }
 
-    suspend fun deleteCartProduct(productId: String){ cartProductDao.deleteCartProduct(productId) }
+    suspend fun updateCartProducts(products: CartProducts) {
+        cartProductDao.updateCartProducts(products)
+    }
 
+    suspend fun deleteCartProduct(productId: String) {
+        cartProductDao.deleteCartProduct(productId)
+    }
 
 
     //Firebase call
@@ -79,6 +90,20 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
         db.addValueEventListener(eventListener)
         awaitClose { db.removeEventListener(eventListener) }
+    }
+
+    fun updateItemCount(product: Product, itemCount: Int) {
+        FirebaseDatabase.getInstance().getReference("Admins")
+            .child("AllProducts/${product.productRandomId}").child("itemCount").setValue(itemCount)
+
+        FirebaseDatabase.getInstance().getReference("Admins")
+            .child("ProductCategory/${product.productCategory}/${product.productRandomId}")
+            .child("itemCount").setValue(itemCount)
+
+        FirebaseDatabase.getInstance().getReference("Admins")
+            .child("ProductType/${product.productType}/${product.productRandomId}")
+            .child("itemCount").setValue(itemCount)
+
     }
 
 

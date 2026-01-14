@@ -44,6 +44,7 @@
                 android:id="@+id/ivProductImage"
                 android:layout_width="39dp"
                 android:layout_height="39dp"
+                android:background="@drawable/bg_see_all"
                 android:padding="3.90dp"
                 android:src="@drawable/cart" />
 
@@ -62,7 +63,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="2.60dp"
                 android:text="ITEM"
-                android:textSize="18.20dp" />
+                android:textSize="18.20sp" />
 
             <ImageButton
                 android:id="@+id/ivShowingProductsCart"
@@ -92,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:text="Next"
                 android:textColor="#FFFFFF"
-                android:textSize="16.90dp"
+                android:textSize="16.90sp"
                 android:textStyle="bold" />
 
             <ImageButton

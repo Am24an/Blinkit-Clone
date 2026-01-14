@@ -44,7 +44,8 @@
                 android:layout_gravity="center"
                 android:padding="8dp"
                 android:src="@drawable/ic_arrow_back"
-                app:tint="@color/black" />
+                app:tint="@color/black"
+                android:contentDescription="Back btn Icon"/>
 
             <EditText
                 android:id="@+id/searchEt"
@@ -53,10 +54,12 @@
                 android:layout_gravity="center"
                 android:background="@android:color/transparent"
                 android:hint="Search"
+                android:inputType="text"
                 android:maxLines="1"
                 android:padding="@dimen/_5sdp"
                 android:textColorHint="@color/black"
-                android:textSize="@dimen/_15ssp" />
+                android:textSize="@dimen/_15ssp"
+                tools:ignore="TouchTargetSizeCheck" />
 
         </LinearLayout>
 

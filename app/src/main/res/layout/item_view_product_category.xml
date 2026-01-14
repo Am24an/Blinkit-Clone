@@ -21,7 +21,8 @@
             android:layout_height="@dimen/_78sdp"
             android:background="@drawable/bg_category"
             android:scaleType="centerInside"
-            android:src="@drawable/vegetable" />
+            android:src="@drawable/vegetable"
+            android:contentDescription="Item category image"/>
 
         <TextView
             android:id="@+id/tvCategoryTitle"

@@ -1,12 +1,15 @@
 package com.aman.userblinkit.activity
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.aman.userblinkit.CartListener
 import com.aman.userblinkit.databinding.ActivityUsersMainBinding
+import com.aman.userblinkit.databinding.BsCartProductsBinding
 import com.aman.userblinkit.viewmodels.UserViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class UsersMainActivity : AppCompatActivity(), CartListener {
 
@@ -20,7 +23,18 @@ class UsersMainActivity : AppCompatActivity(), CartListener {
         binding = ActivityUsersMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         getTotalItemCountInCart()
+        onCartClicked()
 
+    }
+
+    private fun onCartClicked(){
+        binding.llItemCart.setOnClickListener {
+        val bsCartProductsBinding = BsCartProductsBinding.inflate(LayoutInflater.from(this))
+            val bs = BottomSheetDialog(this)
+            bs.setContentView(bsCartProductsBinding.root)
+
+
+        }
     }
 
     private fun getTotalItemCountInCart() {
